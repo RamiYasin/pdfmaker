@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Input</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-field {
+            margin-bottom: 15px;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-field input,
+        .input-field textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .input-field textarea {
+            height: 100px;
+        }
+
+        .btn-submit {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+            <input type="hidden" id="fileid" width="10%" disabled value=<%=id %>>
+                <h2>Add Paragraf</h2>
+
+                <form id="addpara">
+                    <div class="input-field">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="time">Time</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" required></textarea>
+                    </div>
+                    <button class="btn-submit" type="submit">Submit</button>
+                </form>
+    </div>
+    <script>
+
+        const addclik = document.getElementById('addpara');
+
+        addclik.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Get the form input values
+            const Title = document.getElementById('title').value;
+            const time = document.getElementById('time').value;
+            const description = document.getElementById('description').value;
+            const fileid = document.getElementById('fileid').value;
+
+            // Create a JavaScript object with the form data
+            const formData = {
+                "Title": Title,
+                "Description": description,
+                "Time": time,
+                "Fileid": fileid
+            };
+
+            console.log(formData);
+            // Send a POST request to the server with JSON data
+            fetch('/praad', {
+                method: 'POST',
+                body: JSON.stringify(formData), // Serialize the data as JSON
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    console.log("sended")      //return response.json();
+                })
+                .then((data) => {
+                    console.log('Response from server:', data);
+                    // Handle the server's response here (if needed)
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Handle errors here (if needed)
+                });
+        });
+
+
+    </script>
+</body>
+
+</html>

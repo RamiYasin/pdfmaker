@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mysqldb:
+    image: mysql:latest
+    container_name: mysql-container
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'pdfdb'
+      MYSQL_USER: 'ob'
+      MYSQL_PASSWORD: '123'
+      MYSQL_ROOT_PASSWORD: '1234'
+
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+      -  ./db-Tabel/pdf-maker.sql:/docker-entrypoint-initdb.d/0_pdf-maker.sql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8000:8080

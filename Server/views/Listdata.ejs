@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product List</title>
+  <style>
+    /* Add rounded borders to h1 and ul elements */
+    h1,
+    ul {
+      border-radius: 10px;
+      /* You can adjust the value to change the amount of rounding */
+      border: 1px solid #ccc;
+      /* Add a border for visual distinction */
+      padding: 10px;
+      /* Add padding for spacing */
+    }
+
+    /* Style the list items (li) */
+    ul li {
+      list-style: none;
+      /* Remove default list bullet points */
+      margin: 5px 0;
+      /* Add margin for spacing between list items */
+    }
+
+    #EditFileidd {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 200px;
+    }
+
+    /* Style for the "Add Paragraf" button */
+    #addProduct3 {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    /* Style for the "Add Pdf" button */
+    #addProduct2 {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #addProduct {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #addProductt {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #productForm {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f7f7f7;
+      width: 50%;
+    }
+
+
+    /* Style for labels */
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* Style for input fields */
+    input[type="text"],
+    input[type="date"] {
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    /* Style for the submit button */
+    button[type="submit"] {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Product List</h1>
+  <ul>
+    <% result.forEach(result=> { %>
+      <li>
+        <input type="number" id="Fil" disabled value=<%= result.FileID %>>- <%= result.Filename %> - <%= result.Datepdf %>
+      </li>
+      <% }); %>
+  </ul>
+  <div id="maindiv">
+    <ul>
+      <input type="text" id="EditFileidd" name="EditFileid" required>
+      <button id="addProduct3">Add Paragraf</button>
+      <button id="addProduct2">Add Pdf</button>
+      <button id="addProduct">View Pdf</button>
+      <button id="addProductt">Print Pdf</button>
+    </ul>
+  </div>
+
+  <!-- Add a button to trigger the POST request -->
+
+
+  <!-- Form to send the POST request -->
+  <form id="productForm" style="display: none;">
+    <label for="productName">Pdf Name:</label>
+    <input type="text" id="productName" name="productName" required>
+    <label for="productPrice">Date:</label>
+    <input type="Date" id="productPrice" name="productPrice" required>
+    <!-- Add a hidden input field to store the data as JSON -->
+    <input type="hidden" id="jsonData" name="jsonData">
+    <button type="submit">Submit</button>
+  </form>
+  <!-- JavaScript to toggle the form's visibility -->
+  <script>
+    const addButton = document.getElementById('addProduct2');
+    const productForm = document.getElementById('productForm');
+    const addpara = document.getElementById('addProduct3');
+    const printt =document.getElementById('addProduct');
+    const printtr =document.getElementById('addProductt');
+
+    function appendIdToUrl(baseUrl, id) {
+      return `${baseUrl}?id=${id}`;
+    }
+
+    function fetchData(url) {
+      return fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          return data; // You can process the data as needed here
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    addButton.addEventListener('click', () => {
+      productForm.style.display = 'block';
+    });
+
+    productForm.addEventListener('submit', (e) => {
+      e.preventDefault(); // Prevent the default form submission
+
+      // Get the form input values
+      const productName = document.getElementById('productName').value;
+      const productPrice = document.getElementById('productPrice').value;
+
+      // Create a JavaScript object with the form data
+      const formData = {
+        "Filename": productName,
+        "Datepdf": productPrice,
+      };
+
+      //console.log(JSON.stringify(formData));
+      // Send a POST request to the server with JSON data
+      fetch('/pdfadd', {
+        method: 'POST',
+        body: JSON.stringify(formData), // Serialize the data as JSON
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log('Response from server:', data);
+          // Handle the server's response here (if needed)
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          // Handle errors here (if needed)
+        });
+    });
+
+    addpara.addEventListener('click', (e) => {
+      e.preventDefault();
+      const baseUrl = 'http://localhost:3000/eventform'; // Replace with your server's base URL
+      const productPrice = document.getElementById('EditFileidd').value; // Replace with the ID you want to pass
+
+      // Construct the URL by appending the ID to the base URL
+      const urlWithId = `${baseUrl}/${productPrice}`;
+      console.log(urlWithId);
+
+      fetch(urlWithId)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          window.location.href = urlWithId;
+           //const data = response.json();
+           //return response.render('AddData', { data});
+        })
+        /*.then(json => {
+          // Replace the entire document content with the fetched HTML
+          render('AddData', { response});
+        })*/
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+
+      printt.addEventListener('click', (e) => {
+      e.preventDefault();
+      const baseUrl = 'http://localhost:3000/printpdf'; // Replace with your server's base URL
+      const productPrice = document.getElementById('EditFileidd').value; // Replace with the ID you want to pass
+
+      console.log(productPrice);
+
+      // Construct the URL by appending the ID to the base URL
+      const urlWithId = `${baseUrl}/${productPrice}`;
+      console.log(urlWithId);
+
+      fetch(urlWithId)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          window.location.href = urlWithId;
+           //const data = response.json();
+           //return response.render('AddData', { data})
+        })
+        /*.then(json => {
+          // Replace the entire document content with the fetched HTML
+          render('AddData', { response});
+        })*/
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+
+      printtr.addEventListener('click', (e) => {
+      e.preventDefault();
+      const baseUrl = 'http://localhost:3000/generate-pdf'; // Replace with your server's base URL
+      const productPrice = document.getElementById('EditFileidd').value; // Replace with the ID you want to pass
+
+      console.log(productPrice);
+
+      // Construct the URL by appending the ID to the base URL
+      const urlWithId = `${baseUrl}/${productPrice}`;
+
+      fetch(urlWithId)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          window.location.href = urlWithId;
+           //const data = response.json();
+           //return response.render('AddData', { data})
+        })
+        /*.then(json => {
+          // Replace the entire document content with the fetched HTML
+          render('AddData', { response});
+        })*/
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+
+  </script>
+
+  </script>
+</body>
+
+</html>
